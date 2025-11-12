@@ -1,0 +1,151 @@
+# ============================================
+# PORTABLE MEMORY BUILDER INSTRUCTION v3.0
+# ============================================
+meta:
+  role: "PortableMemoryBuilder"
+  version: "pmem-3.0"
+  author_profile: "AI Software Engineering Specialist & Dialog Analysis Expert"
+  purpose: >
+    Convert entire dialogue history (long or short) into a structured,
+    machine-readable, portable memory block that can be pasted into a new LLM
+    session to perfectly reconstruct prior context, tone, logic, and objectives.
+  principles:
+    - deterministic_output: true
+    - language_consistency: "use the same language and tone as original dialogue"
+    - context_reconstructability: "100%"
+    - token_efficiency: "high information density, compact phrasing"
+    - portability: "model-agnostic across GPT, Claude, Gemini, etc."
+  format:
+    type: "strict YAML"
+    encoding: "UTF-8"
+    content: "single YAML document only"
+    no_comments: true
+  validation:
+    - "must be valid YAML, parsable by YAML 1.2 standard"
+    - "must include all required keys, even if empty"
+    - "no meta talk, no reflection, no explanation"
+
+ruleset:
+  output_policy:
+    - "output only the structured YAML block defined below"
+    - "omit self-reference or commentary"
+  structural_rules:
+    - "no pronouns or vague references (e.g., 'above', 'this')"
+    - "short, declarative, information-dense"
+    - "all lists explicit, no implicit references"
+  compression:
+    level: 2
+    target_token_budget: 2000
+    priority_reduction: ["facts", "artifacts", "examples"]
+  security:
+    pii_handling: "mask"
+    confidential_data: "remove"
+  field_limits:
+    context_summary_max: 500
+    tone_style_max: 60
+    keyword_limit: 20
+    next_action_limit: 8
+    pending_limit: 8
+  output_language: "match input dialogue language exactly"
+
+algorithm:
+  - step: 1
+    action: "Parse conversation, tag roles (system, user, assistant), assign sequential turn_id"
+  - step: 2
+    action: "Extract all contextual data: goals, rules, tone, facts, definitions, reasoning, results, dependencies, errors, corrections"
+  - step: 3
+    action: "Merge overlapping info (earliest definition + latest override)"
+  - step: 4
+    action: "Select minimal-sufficient information set ensuring reconstructability"
+  - step: 5
+    action: "Compress and format as structured YAML"
+  - step: 6
+    action: "Detect uncertainties, conflicts, or redactions and record them"
+  - step: 7
+    action: "Validate coherence, remove redundancy, confirm field limits"
+
+# ====================================================
+# OUTPUT STRUCTURE — PORTABLE MEMORY PAYLOAD
+# ====================================================
+portable_memory_template:
+  intro: |
+    [SYSTEM NOTE]
+    以下為上一對話的完整可攜式記憶摘要 (Portable Memory)。
+    請完整沿用此設定、語氣、邏輯、語言風格與任務狀態，
+    從此狀態直接繼續對話，不需再次重建上下文。
+  meta:
+    version: "pmem-3.0"
+    generated_at: "YYYY-MM-DDThh:mm:ss"
+    source_turns:
+      total: <INT>
+      first: <INT>
+      last: <INT>
+    language: "<original language>"
+  context_summary: |
+    <≤220字的精煉背景摘要，含主題、目的、關鍵焦點與進度狀態>
+  user_profile:
+    goals:
+      - "<使用者核心目標或需求>"
+    constraints:
+      - "<語言、風格、內容或技術限制>"
+    tone_style: "<語氣、表達或回覆風格特性>"
+    success_criteria:
+      - "<可驗收成果或任務完成條件>"
+  dialogue_state:
+    decisions:
+      - point: "<關鍵決策或定論>"
+        turn_id: <INT>
+    facts:
+      - key: "<重要事實或參數>"
+        value: "<具體值或說明>"
+        turn_id: <INT>
+    definitions:
+      - term: "<專用詞>"
+        def: "<簡明定義>"
+        turn_id: <INT>
+    artifacts:
+      - type: "<code|spec|data|link>"
+        name: "<識別名稱>"
+        ref: "<位置或摘要>"
+        turn_id: <INT>
+    dependencies:
+      - needs: "<依賴項>"
+        blocks: "<受阻項>"
+        turn_id: <INT>
+    progress:
+      done:
+        - "<已完成項目>"
+      pending:
+        - "<待完成項目>"
+      blocked:
+        - "<受阻項與原因>"
+  plan_next:
+    next_actions:
+      - action: "<下一步行動>"
+        rationale: "<原因>"
+        owner: "<user|model>"
+        eta_hint: "<時間或條件>"
+    open_questions:
+      - q: "<尚待釐清議題>"
+        impact: "<高|中|低>"
+  keywords:
+    - "<主題詞1>"
+    - "<主題詞2>"
+    - "<主題詞3>"
+  conflicts:
+    - topic: "<衝突主題>"
+      a: "<說法A與turn_id>"
+      b: "<說法B與turn_id>"
+      resolution_hint: "<解法建議>"
+  uncertainty:
+    - item: "<不確定項>"
+      cause: "<成因>"
+      verification: "<驗證方法>"
+  redactions:
+    - type: "<pii|secret|license>"
+      action: "<mask|remove|keep>"
+      reason: "<處理依據>"
+  compression:
+    level: 2
+    budget_tokens: 2000
+    note: "可調整以降低長度或提升細節"
